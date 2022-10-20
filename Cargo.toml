@@ -2,6 +2,12 @@
 name = "pma-cli"
 version = "0.1.0"
 edition = "2021"
+authors = ["Kohei Fujino <appleblueberrycherry@gmail.com>"]
+readme = "README.md"
+license-file = "LICENSE"
+description = "phpmyadmin cli written in Rust"
+keywords = ["phpmyadmin", "pma", "cli", "mysql", "db"]
+repository = "https://github.com/k-fujino-kohei/phpmyadmin-cli-rs"
 
 [dependencies]
 anyhow = "1.0.58"
