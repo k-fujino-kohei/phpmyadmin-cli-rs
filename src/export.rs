@@ -35,7 +35,7 @@ async fn _export(
     let exported_bin = client.export(&token, &cookie, config.pma).await?;
     let files = read_zip(exported_bin).await?;
     let create_files = files.into_iter().map(|f| {
-        dbg!(&f.header.file_name);
+        println!("Exported: {}", f.header.file_name);
         let path = config.output_path.clone();
         tokio::spawn(async move {
             let root = Path::new(&path).to_path_buf();
