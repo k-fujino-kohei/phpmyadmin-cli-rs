@@ -6,8 +6,13 @@ authors = ["Kohei Fujino <appleblueberrycherry@gmail.com>"]
 readme = "README.md"
 license-file = "LICENSE"
 description = "phpmyadmin cli written in Rust"
-keywords = ["phpmyadmin", "pma", "cli", "mysql", "db"]
+keywords = ["phpmyadmin", "pma", "cli", "mysql", "db", "database"]
+categories = ["database", "command-line-utilities"]
 repository = "https://github.com/k-fujino-kohei/phpmyadmin-cli-rs"
+
+[[bin]]
+name = "pma"
+path = "src/bin/pma.rs"
 
 [dependencies]
 anyhow = "1.0.58"
