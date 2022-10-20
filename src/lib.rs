@@ -4,18 +4,13 @@ mod pma_client;
 mod read_zip;
 
 use crate::pma_client::PMAClient;
-use clap::Parser;
-use command::{Command, Opt};
+use command::Command;
 use export::{export, export_all};
 use pma_client::PMAConfig;
 
-#[tokio::main]
-async fn main() -> anyhow::Result<()> {
-    let opt = Opt::parse();
-    run(opt).await
-}
+pub use command::Opt;
 
-async fn run(opt: Opt) -> anyhow::Result<()> {
+pub async fn run(opt: Opt) -> anyhow::Result<()> {
     let client = PMAClient::new(PMAConfig {
         url: opt.url,
         lang: opt.lang,
