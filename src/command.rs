@@ -1,6 +1,12 @@
 use clap::{Parser, ValueHint};
 
 #[derive(Debug, Parser)]
+#[clap(
+    name = env!("CARGO_PKG_NAME"),
+    version = env!("CARGO_PKG_VERSION"),
+    author = env!("CARGO_PKG_AUTHORS"),
+    about = env!("CARGO_PKG_DESCRIPTION"),
+)]
 pub struct Opt {
     /// Location of phpmyadmin
     #[clap(short, long, value_hint = ValueHint::Url)]
