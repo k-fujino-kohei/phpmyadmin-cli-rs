@@ -66,4 +66,8 @@ pub struct ExportOption {
     /// Separate exported data.
     #[clap(short, long, default_value = "false")]
     pub separate_files: bool,
+
+    /// Add `CREATE DATABASE` command.
+    #[clap(short, long, default_value = "false")]
+    pub create_database: bool,
 }

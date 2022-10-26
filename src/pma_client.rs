@@ -18,6 +18,7 @@ pub struct PMAExportConfig {
     pub db: String,
     pub tables: Vec<Table>,
     pub separate_files: bool,
+    pub create_database: bool,
 }
 
 #[derive(Debug)]
@@ -150,6 +151,9 @@ impl<'a> ExportPayload<'a> {
             ("token", token),
             ("as_separate_files", as_separate_files),
         ]);
+        if config.create_database {
+            payload.extend(&[("sql_create_database", "something")]);
+        }
         payload.extend(&tables);
         payload
     }
@@ -185,7 +189,6 @@ impl<'a> Default for ExportPayload<'a> {
             to_str_tuple!("sql_use_transaction", "something"),
             to_str_tuple!("sql_compatibility", "NONE"),
             to_str_tuple!("sql_structure_or_data", "structure_and_data"),
-            to_str_tuple!("sql_create_database", "something"),
             to_str_tuple!("sql_create_table", "something"),
             to_str_tuple!("sql_drop_table", "something"),
             to_str_tuple!("sql_auto_increment", "something"),

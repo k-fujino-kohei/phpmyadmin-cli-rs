@@ -42,20 +42,29 @@ async fn _export(
     option: ExportOption,
 ) -> anyhow::Result<()> {
     let config = opt_to_config(tables, option).await?;
+    let ignore_database_file = config.pma.separate_files && !config.pma.create_database;
     let (token, cookie) = client.fetch_token().await?;
     let exported_bin = client.export(&token, &cookie, config.pma).await?;
     let files = read_zip(exported_bin).await?;
-    let create_files = files.into_iter().map(|f| {
-        println!("Exported: {}", f.header.file_name);
-        let path = config.output_path.clone();
-        tokio::spawn(async move {
-            let root = Path::new(&path).to_path_buf();
-            let path = root.clone().join(f.header.file_name);
-            let mut file = File::create(path).await?;
-            file.write_all(&f.content).await?;
-            anyhow::Ok(())
+    let create_files = files
+        .into_iter()
+        .filter(|f| {
+            if ignore_database_file && f.header.file_name.contains("database") {
+                return false;
+            }
+            true
         })
-    });
+        .map(|f| {
+            println!("Exported: {}", f.header.file_name);
+            let path = config.output_path.clone();
+            tokio::spawn(async move {
+                let root = Path::new(&path).to_path_buf();
+                let path = root.clone().join(f.header.file_name);
+                let mut file = File::create(path).await?;
+                file.write_all(&f.content).await?;
+                anyhow::Ok(())
+            })
+        });
     for h in create_files {
         h.await??;
     }
@@ -89,6 +98,7 @@ async fn opt_to_config(tables: Vec<String>, option: ExportOption) -> anyhow::Res
         ref data_prefix,
         separate_files,
         output,
+        create_database,
     } = option;
     if let Some(d) = data {
         check_if_table_exists(&tables, d)?;
@@ -114,6 +124,7 @@ async fn opt_to_config(tables: Vec<String>, option: ExportOption) -> anyhow::Res
             db,
             tables,
             separate_files,
+            create_database,
         },
         output_path: output,
     })
