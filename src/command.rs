@@ -26,6 +26,10 @@ pub enum Command {
     },
     /// Export all tables.
     ExportAll {
+        /// Export table names that match the specified regex.
+        #[clap(short, long, value_name = "regex")]
+        filter_table: Option<String>,
+
         #[clap(flatten)]
         export_option: ExportOption,
     },

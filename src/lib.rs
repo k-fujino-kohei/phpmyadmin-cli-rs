@@ -21,7 +21,10 @@ pub async fn run(opt: Opt) -> anyhow::Result<()> {
             export_option,
         } => export(client, tables, export_option).await?,
 
-        Command::ExportAll { export_option } => export_all(client, export_option).await?,
+        Command::ExportAll {
+            filter_table,
+            export_option,
+        } => export_all(client, filter_table, export_option).await?,
     }
     Ok(())
 }

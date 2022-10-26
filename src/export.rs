@@ -5,6 +5,7 @@ use crate::{
 };
 use anyhow::bail;
 use itertools::Itertools;
+use regex::Regex;
 use std::path::Path;
 use tokio::{fs::File, io::AsyncWriteExt};
 
@@ -19,8 +20,18 @@ pub async fn export(
     Ok(())
 }
 
-pub async fn export_all(client: PMAClient, option: ExportOption) -> anyhow::Result<()> {
-    let tables = client.fetch_tables(&option.db).await?;
+pub async fn export_all(
+    client: PMAClient,
+    filter_table: Option<String>,
+    option: ExportOption,
+) -> anyhow::Result<()> {
+    let filter = filter_table.map(|f| Regex::new(&f)).transpose()?;
+    let tables = client
+        .fetch_tables(&option.db)
+        .await?
+        .into_iter()
+        .filter(|table| filter.as_ref().map(|f| f.is_match(table)).unwrap_or(true))
+        .collect();
     _export(client, tables, option).await?;
     Ok(())
 }
